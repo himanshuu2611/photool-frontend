@@ -4,26 +4,27 @@ const CompressBox = ({ filename, setProcessedImage }) => {
   const [targetSize, setTargetSize] = useState("");
 
   const handleCompress = async () => {
-    if (!filename) return alert("Upload an image first!");
-    if (!targetSize) return alert("Enter a target size!");
+  if (!filename) return alert("Upload an image first!");
+  if (!targetSize) return alert("Enter a target size!");
 
-    const res = await fetch("https://photool-backend.onrender.com/api/images/compress", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        filename, 
-        targetSizeKB: Number(targetSize)   // ✅ fix: send number with correct key
-      }),
-    });
+  const res = await fetch("https://photool-backend.onrender.com/api/images/compress", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ 
+      filename, 
+      quality: Number(targetSize)   // ✅ match backend key
+    }),
+  });
 
-    const data = await res.json();
-    if (data.error) {
-      alert(data.error);
-      return;
-    }
+  const data = await res.json();
+  if (data.error) {
+    alert(data.error);
+    return;
+  }
 
-    setProcessedImage(`https://photool-backend.onrender.com/uploads/${data.filename}`);
-  };
+  setProcessedImage(`https://photool-backend.onrender.com/uploads/${data.filename}`);
+};
+
 
   return (
     <div className="bg-blue-100 p-4 sm:p-5 md:p-6 rounded-2xl shadow-md hover:shadow-lg transition-shadow">
