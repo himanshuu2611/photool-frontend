@@ -6,13 +6,36 @@ const ResizeBox = ({ filename, setProcessedImage }) => {
 
   const handleResize = async () => {
     if (!filename) return alert("Upload an image first!");
-    const res = await fetch("https://photool-backend.onrender.com/api/images/resize", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ filename, width, height }),
-    });
-    const data = await res.json();
-    setProcessedImage(`https://photool-backend.onrender.com/uploads/${data.filename}`);
+    if (!width || !height) return alert("Enter both width and height!");
+
+    try {
+      const res = await fetch("https://photool-backend.onrender.com/api/images/resize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          filename,
+          width: Number(width),
+          height: Number(height),
+        }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        alert(`Server error: ${text}`);
+        return;
+      }
+
+      const data = await res.json();
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+
+      setProcessedImage(`https://photool-backend.onrender.com/uploads/${data.filename}`);
+    } catch (err) {
+      console.error(err);
+      alert("Network error");
+    }
   };
 
   return (

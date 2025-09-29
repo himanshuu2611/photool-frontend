@@ -1,30 +1,37 @@
 import React, { useState } from "react";
 
 const CompressBox = ({ filename, setProcessedImage }) => {
-  const [targetSize, setTargetSize] = useState("");
+  const [quality, setQuality] = useState("");
 
   const handleCompress = async () => {
-  if (!filename) return alert("Upload an image first!");
-  if (!targetSize) return alert("Enter a target size!");
+    if (!filename) return alert("Upload an image first!");
+    if (!quality) return alert("Enter quality (1-100)!");
 
-  const res = await fetch("https://photool-backend.onrender.com/api/images/compress", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ 
-      filename, 
-      quality: Number(targetSize)   // ✅ match backend key
-    }),
-  });
+    try {
+      const res = await fetch("https://photool-backend.onrender.com/api/images/compress", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ filename, quality: Number(quality) }),
+      });
 
-  const data = await res.json();
-  if (data.error) {
-    alert(data.error);
-    return;
-  }
+      if (!res.ok) {
+        const text = await res.text();
+        alert(`Server error: ${text}`);
+        return;
+      }
 
-  setProcessedImage(`https://photool-backend.onrender.com/uploads/${data.filename}`);
-};
+      const data = await res.json();
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
 
+      setProcessedImage(`https://photool-backend.onrender.com/uploads/${data.filename}`);
+    } catch (err) {
+      console.error(err);
+      alert("Network error");
+    }
+  };
 
   return (
     <div className="bg-blue-100 p-4 sm:p-5 md:p-6 rounded-2xl shadow-md hover:shadow-lg transition-shadow">
@@ -33,9 +40,9 @@ const CompressBox = ({ filename, setProcessedImage }) => {
       </h2>
       <input
         type="number"
-        placeholder="Target size (KB)"
-        value={targetSize}
-        onChange={(e) => setTargetSize(e.target.value)}
+        placeholder="Quality (1-100)"
+        value={quality}
+        onChange={(e) => setQuality(e.target.value)}
         className="border p-2 rounded w-full mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
       />
       <button

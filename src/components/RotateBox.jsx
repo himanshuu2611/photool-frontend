@@ -5,13 +5,32 @@ const RotateBox = ({ filename, setProcessedImage }) => {
 
   const handleRotate = async () => {
     if (!filename) return alert("Upload an image first!");
-    const res = await fetch("https://photool-backend.onrender.com/api/images/rotate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ filename, angle }),
-    });
-    const data = await res.json();
-    setProcessedImage(`https://photool-backend.onrender.com/uploads/${data.filename}`);
+    if (angle === "") return alert("Enter angle in degrees!");
+
+    try {
+      const res = await fetch("https://photool-backend.onrender.com/api/images/rotate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ filename, angle: Number(angle) }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        alert(`Server error: ${text}`);
+        return;
+      }
+
+      const data = await res.json();
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+
+      setProcessedImage(`https://photool-backend.onrender.com/uploads/${data.filename}`);
+    } catch (err) {
+      console.error(err);
+      alert("Network error");
+    }
   };
 
   return (

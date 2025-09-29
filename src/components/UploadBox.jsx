@@ -6,17 +6,35 @@ const UploadBox = ({ setFilename }) => {
 
   const handleUpload = async () => {
     if (!file) return alert("Select an image first!");
+
     const formData = new FormData();
     formData.append("image", file);
 
-    const res = await fetch("https://photool-backend.onrender.com/api/images/upload", {
-      method: "POST",
-      body: formData,
-    });
-    const data = await res.json();
-    if (data.filename) {
-      setFilename(data.filename);
-      alert("Uploaded successfully!");
+    try {
+      const res = await fetch("https://photool-backend.onrender.com/api/images/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        alert(`Server error: ${text}`);
+        return;
+      }
+
+      const data = await res.json();
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+
+      if (data.filename) {
+        setFilename(data.filename);
+        alert("Uploaded successfully!");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Network error");
     }
   };
 
@@ -50,30 +68,32 @@ const UploadBox = ({ setFilename }) => {
         <p className="text-sm text-gray-400 mb-3">Click anywhere to choose an image</p>
       )}
 
-      {/* Clear button for file selection */}
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation(); // prevent box click trigger
-          fileInputRef.current.click();
-        }}
-        className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold w-full sm:w-auto transition-all shadow-md hover:shadow-lg"
-      >
-        Choose File
-      </button>
-
-      {/* Upload button */}
-      {file && (
+      <div className="flex flex-col sm:flex-row gap-2 justify-center">
+        {/* Choose File button */}
         <button
+          type="button"
           onClick={(e) => {
-            e.stopPropagation(); // prevent box click trigger
-            handleUpload();
+            e.stopPropagation();
+            fileInputRef.current.click();
           }}
-          className="ml-2 bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold w-full sm:w-auto transition-all shadow-md hover:shadow-lg"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold w-full sm:w-auto transition-all shadow-md hover:shadow-lg"
         >
-          Upload
+          Choose File
         </button>
-      )}
+
+        {/* Upload button */}
+        {file && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleUpload();
+            }}
+            className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold w-full sm:w-auto transition-all shadow-md hover:shadow-lg"
+          >
+            Upload
+          </button>
+        )}
+      </div>
     </div>
   );
 };
