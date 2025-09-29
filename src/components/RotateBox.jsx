@@ -35,7 +35,8 @@ const RotateBox = ({ filename, setProcessedImage }) => {
 
       const rotatedUrl = `https://photool-backend.onrender.com/uploads/${data.filename}`;
       setProcessedImage(rotatedUrl);
-      alert("Image rotated successfully - scroll down to Download!");
+      alert("Image rotated successfully!\nScroll down to Download!");
+
     } catch (err) {
       console.error(err);
       alert("Network error");
