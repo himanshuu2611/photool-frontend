@@ -34,7 +34,7 @@ const CompressBox = ({ filename, setProcessedImage }) => {
 
       const compressedUrl = `https://photool-backend.onrender.com/uploads/${data.filename}`;
       setProcessedImage(compressedUrl);
-      alert("Image compressed successfully!");
+      alert("Image compressed successfully !\nScroll down to Download !");
     } catch (err) {
       console.error(err);
       alert("Network error");

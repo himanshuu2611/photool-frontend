@@ -36,7 +36,7 @@ const ResizeBox = ({ filename, setProcessedImage }) => {
 
       const resizedUrl = `https://photool-backend.onrender.com/uploads/${data.filename}`;
       setProcessedImage(resizedUrl);
-      alert("Image resized successfully!");
+      alert("Image resized successfully !\nScroll down to Download !");
     } catch (err) {
       console.error(err);
       alert("Network error");

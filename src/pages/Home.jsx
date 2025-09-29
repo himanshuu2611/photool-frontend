@@ -64,8 +64,18 @@ const Home = () => {
   </div>
 )}
        <footer className="mt-10 py-4 text-center text-gray-700 text-sm border-t">
-        © {new Date().getFullYear()} PhoTool [Himanshu Tiwari]. All rights reserved.
-      </footer>
+  © {new Date().getFullYear()} PhoTool [
+  <a
+    href="https://www.linkedin.com/in/himanshuu315/"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-blue-600 hover:underline"
+  >
+    Himanshu Tiwari
+  </a>
+  ]. All rights reserved.
+</footer>
+
 
     </div>
   );

@@ -43,7 +43,7 @@ const CropBox = ({ filename, setProcessedImage }) => {
 
       const croppedUrl = `https://photool-backend.onrender.com/uploads/${data.filename}`;
       setProcessedImage(croppedUrl);
-      alert("Image cropped successfully!");
+      alert("Image cropped successfully !\nScroll down to Download !");
     } catch (err) {
       console.error(err);
       alert("Network error");
